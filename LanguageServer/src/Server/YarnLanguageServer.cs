@@ -87,7 +87,7 @@ namespace YarnLanguageServer
 
             // Register 'List Nodes' command
             options.OnExecuteCommand<Container<NodeInfo>>(
-                (commandParams) => ListNodesInDocumentAsync(workspace, commandParams),
+                (commandParams) => ListNodesInDocumentAsync(ref workspace, commandParams),
                 (_, _) => new ExecuteCommandRegistrationOptions
                 {
                     Commands = new[] { Commands.ListNodes },
@@ -96,7 +96,7 @@ namespace YarnLanguageServer
 
             // Register 'Add Nodes' command
             options.OnExecuteCommand<TextDocumentEdit>(
-                (commandParams) => AddNodeToDocumentAsync(workspace, commandParams),
+                (commandParams) => AddNodeToDocumentAsync(ref workspace, commandParams),
                 (_, _) => new ExecuteCommandRegistrationOptions
                 {
                     Commands = new[] { Commands.AddNode },
@@ -105,7 +105,7 @@ namespace YarnLanguageServer
 
             // Register 'Remove Node' command
             options.OnExecuteCommand<TextDocumentEdit>(
-                (commandParams) => RemoveNodeFromDocumentAsync(workspace, commandParams),
+                (commandParams) => RemoveNodeFromDocumentAsync(ref workspace, commandParams),
                 (_, _) => new ExecuteCommandRegistrationOptions
                 {
                     Commands = new[] { Commands.RemoveNode },
@@ -114,7 +114,7 @@ namespace YarnLanguageServer
 
             // Register 'Update Header' command
             options.OnExecuteCommand<TextDocumentEdit>(
-                (commandParams) => UpdateNodeHeaderAsync(workspace, commandParams),
+                (commandParams) => UpdateNodeHeaderAsync(ref workspace, commandParams),
                 (_, _) => new ExecuteCommandRegistrationOptions
                 {
                     Commands = new[] { Commands.UpdateNodeHeader },
@@ -123,7 +123,7 @@ namespace YarnLanguageServer
 
             // Register 'Compile' command
             options.OnExecuteCommand<CompilerOutput>(
-                (commandParams) => CompileWorkspace(workspace, commandParams),
+                (commandParams) => CompileWorkspace(ref workspace, commandParams),
                 (_, _) => new ExecuteCommandRegistrationOptions
                 {
                     Commands = new[] { Commands.Compile },
@@ -133,7 +133,7 @@ namespace YarnLanguageServer
             return options;
         }
 
-        private static Task<TextDocumentEdit> AddNodeToDocumentAsync(Workspace workspace, ExecuteCommandParams<TextDocumentEdit> commandParams)
+        private static Task<TextDocumentEdit> AddNodeToDocumentAsync(ref Workspace workspace, ExecuteCommandParams<TextDocumentEdit> commandParams)
         {
             var yarnDocumentUriString = commandParams.Arguments[0].ToString();
 
@@ -241,7 +241,7 @@ namespace YarnLanguageServer
             });
         }
 
-        private static Task<TextDocumentEdit> RemoveNodeFromDocumentAsync(Workspace workspace, ExecuteCommandParams<TextDocumentEdit> commandParams)
+        private static Task<TextDocumentEdit> RemoveNodeFromDocumentAsync(ref Workspace workspace, ExecuteCommandParams<TextDocumentEdit> commandParams)
         {
             var yarnDocumentUriString = commandParams.Arguments[0].ToString();
 
@@ -316,7 +316,7 @@ namespace YarnLanguageServer
             });
         }
 
-        private static Task<TextDocumentEdit> UpdateNodeHeaderAsync(Workspace workspace, ExecuteCommandParams<TextDocumentEdit> commandParams)
+        private static Task<TextDocumentEdit> UpdateNodeHeaderAsync(ref Workspace workspace, ExecuteCommandParams<TextDocumentEdit> commandParams)
         {
             var yarnDocumentUriString = commandParams.Arguments[0].ToString();
 
@@ -405,7 +405,7 @@ namespace YarnLanguageServer
             });
         }
 
-        private static Task<Container<NodeInfo>> ListNodesInDocumentAsync(Workspace workspace, ExecuteCommandParams<Container<NodeInfo>> commandParams)
+        private static Task<Container<NodeInfo>> ListNodesInDocumentAsync(ref Workspace workspace, ExecuteCommandParams<Container<NodeInfo>> commandParams)
         {
             var result = new List<NodeInfo>();
 
@@ -421,7 +421,7 @@ namespace YarnLanguageServer
             return Task.FromResult<Container<NodeInfo>>(result);
         }
 
-        private static Task<CompilerOutput> CompileWorkspace(Workspace workspace, ExecuteCommandParams<CompilerOutput> commandParams)
+        private static Task<CompilerOutput> CompileWorkspace(ref Workspace workspace, ExecuteCommandParams<CompilerOutput> commandParams)
         {
             var job = new Yarn.Compiler.CompilationJob
             {
